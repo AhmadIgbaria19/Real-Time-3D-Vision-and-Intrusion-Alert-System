@@ -20,17 +20,13 @@ class ImageUndistorter:
             img = cv2.imread(img_file)
             h, w = img.shape[:2]
 
-            # חישוב מטריצת המצלמה החדשה
             new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(self.camera_matrix, self.distortion_coeffs, (w, h), 1, (w, h))
 
-            # הסרת העיוות מהתמונה
             undistorted_img = cv2.undistort(img, self.camera_matrix, self.distortion_coeffs, None, new_camera_matrix)
 
-            # חיתוך ה-ROI כדי להסיר את המתיחות בצדדים
             x, y, w, h = roi
             undistorted_img = undistorted_img[y:y+h, x:x+w]
 
-            # שמירת התמונה המתוקנת
             output_file = os.path.join(self.image_path, f"undistorted_{os.path.basename(img_file)}")
             cv2.imwrite(output_file, undistorted_img)
 
